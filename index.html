@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: monospace;
+        }
+        body{
+            background-image: url('./images/balloons-2331488_1280.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+        .main-con{
+            background-color: rgba(0, 0, 0, 0.46);
+            width: 100vw;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+        }
+        .clockcon{
+            background-color:#fff;
+            width: 350px;
+            min-height: 400px;
+            box-shadow:  0 0 10px rgba(0, 0, 0, 0.46);
+            border-radius: 10px;
+            margin: auto ;
+        }
+        .clock{
+            border: 10px solid #EC4E71;
+            height: 250px;
+            width: 250px;
+            border-radius: 50%;
+            display: flex;
+            box-shadow: 0 0 20px #461252;
+            justify-content: center;
+            align-items: center;
+            margin: 2em auto;
+        }
+        .clock>.par h1,  .clock>.par p{
+            margin: auto;
+            max-width: max-content;
+            color: #000000;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+        .clock>.par h1{
+            font-size: 4rem;
+            color: #EC4E71;
+        }
+        sup{
+            font-size: 16px;
+            color: black;
+        }
+        #set-alarm{
+            background-color: #EC4E71;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            box-shadow:  0 0 5px #461252;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: border .5s ease-in-out;
+            margin-left:8rem;
+            margin-top: 1em;
+        }
+        .setAlarm{
+            position: absolute;
+            transform: translateY(-100%);
+            background-color: rgba(0, 0, 0, 0.46);
+            width: 100%;
+            transition: all 0.8s ease;
+            height: 100vh;
+        }
+        .setAlarm .con{
+            top: 30%;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%);
+            padding: 2rem 2rem 1rem 2rem;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+        .setAlarm input{
+            padding: 1rem 3rem;
+            display: block;
+            margin: 5px 0;
+            outline: none;
+        }
+         #done{
+            margin: 1.5rem auto 0;
+            display: block;
+            background-color: #EC4E71;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            box-shadow:  0 0 5px #461252;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: border .5s ease-in-out;
+            margin-left:6rem;
+            margin-top: 1em;
+        } 
+        .cancel{
+            font-size: 4rem;
+            position: absolute;
+            right: 2rem;
+            top: 2rem;
+            color: #ffffff;
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            box-shadow:  0 0 5px #fff;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom:7px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-con">
+
+        <div class="clockcon">
+            <div class="clock">
+                <div class="par">
+                    <h1 class="time" id="time">12:00:00</h1>
+                    <p class="date" id="date"></p>
+                </div>
+            </div>
+            <button id="set-alarm" onclick="setalarm()">Set alarm</button>
+        </div>
+        <audio src="./extreme-clock-alarm-26588.mp3" style="display: none;" id="alarmSound"></audio>
+        <div class="setAlarm">
+            <span class="cancel" onclick="cancel()">&times;</span>
+            <div class="con">
+                <input type="number" id="sethour" placeholder="Hour">
+                <input type="number" id="setminutes" placeholder="Minutes">
+                <input type="textarea" id="setnotes" placeholder="Note">
+                <button id="done" onclick="done()">Done</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currenttime = new Date();
+        let h, m;
+
+        function showTime() {
+            currenttime = new Date();
+            h = currenttime.getHours().toString().padStart(2, 0);
+            m = currenttime.getMinutes().toString().padStart(2, 0);
+            let s = currenttime.getSeconds().toString().padStart(2, 0);
+            let session = "am";
+            let AMpm = currenttime.getHours();
+
+            if (AMpm < 12) {
+                session = "am";
+            } else {
+                session = "pm";
+            }
+
+            document.getElementById('time').innerHTML = `${h}:${m}<sup>${s}${session}</sup>`;
+
+            let days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
+            let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            document.getElementById('date').innerHTML = `${days[currenttime.getDay()]} ${currenttime.getDate()}, ${months[currenttime.getMonth()]} ${currenttime.getFullYear()}`;
+        }
+
+        setInterval(showTime, 1000);
+        showTime();
+
+        let setAlarm = document.querySelector('.setAlarm');
+
+        function setalarm() {
+            setAlarm.style.transform = 'translateY(0%)';
+        }
+
+        function cancel() {
+            setAlarm.style.transform = 'translateY(-100%)';
+        }
+
+        let alarmHours = null;
+        let alarmMinutes = null;
+
+        function done() {
+            let hours = document.getElementById('sethour').value;
+            let minutes = document.getElementById('setminutes').value;
+            alarmHours = parseInt(hours);
+            alarmMinutes = parseInt(minutes);
+            cancel(); // Hide the alarm set window after setting the alarm
+        }
+
+        function checkAlarm() {
+            const currenttime = new Date();
+            const currenthours = currenttime.getHours();
+            const currentminutes = currenttime.getMinutes();
+
+            if (alarmHours === currenthours && alarmMinutes === currentminutes) {
+                // alert('Alarm ringing!');
+                const alarmSound = document.getElementById('alarmSound');
+                alarmSound.play();
+                alarmHours = null; // Reset the alarm after it rings
+                alarmMinutes = null;
+            }
+        }
+
+        setInterval(() => {
+            showTime();
+            checkAlarm();
+        }, 1000);
+    </script>
+</body>
+</html>
